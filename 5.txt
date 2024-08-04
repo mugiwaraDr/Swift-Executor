@@ -1,0 +1,16 @@
+import pandas as pd 
+from sklearn.model_selection import train_test_split 
+from sklearn.naive_bayes import GaussianNB 
+from sklearn import metrics 
+from sklearn.metrics import classification_report 
+df=pd.read_csv('C:/Users/lokesh reddy/Desktop/6 naivebasedataset.csv',header=None) 
+X=df.drop([8],axis=1) 
+Y=df[8] 
+x_train,x_test,y_train,y_test=train_test_split(X,Y,test_size=0.2,random_state=1) 
+gn=GaussianNB() 
+gn.fit(x_train,y_train) 
+y_pred=gn.predict(x_test) 
+print(len(x_test)) 
+print(len(x_train)) 
+print(metrics.accuracy_score(y_test,y_pred)*100) 
+print(classification_report(y_test,y_pred))
