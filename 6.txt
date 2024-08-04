@@ -1,0 +1,38 @@
+import matplotlib.pyplot as plt 
+from sklearn.inspection import DecisionBoundaryDisplay 
+from sklearn.svm import SVC 
+from sklearn.preprocessing import LabelEncoder 
+from sklearn.model_selection import train_test_split 
+from sklearn.metrics import classification_report 
+import pandas as pd 
+import seaborn as sb 
+import numpy as np 
+import warnings 
+warnings.filterwarnings('ignore') 
+# datasets 
+df = pd.read_csv(r"C:/Users/lokesh reddy/Desktop/Iris.csv") 
+df.drop('Id',axis=1,inplace=True) 
+df.head() 
+df.info() 
+le = LabelEncoder() 
+df['Species']= le.fit_transform(df['Species']) 
+df['Species'].unique() 
+#model 
+X=df.iloc[:,:4] 
+y=df.iloc[:,4:] 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,random_state=123) 
+svm = SVC(kernel="rbf", gamma=0.5, C=1.0) 
+svm.fit(X_train, y_train) 
+y_prediction=svm.predict(X_test) 
+class_names=["Iris-setosa","Iris-virginica","Iris-versicolor"] 
+print(classification_report(y_test, y_prediction ,target_names=class_names)) 
+x=df.iloc[:,:2] 
+svm2 = SVC(kernel="rbf", gamma=0.5, C=1.0) 
+svm2.fit(x,y) 
+DecisionBoundaryDisplay.from_estimator( 
+ svm2, 
+ x, 
+ response_method="predict", 
+ cmap=plt.cm.Spectral, 
+ alpha=0.8, 
+ ) 

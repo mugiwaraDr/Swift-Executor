@@ -1,0 +1,29 @@
+import numpy as np 
+import pandas as pd 
+df = pd.read_csv("C:/Users/lokesh reddy/Desktop/sports1.csv") 
+concept=np.array(df.iloc[:,0:-1]) 
+target=np.array(df.iloc[:,-1]) 
+def learn(concept,target): 
+     specific_h=concept[0].copy() 
+     print("Most specific",specific_h) 
+     general_h=[["?" for i in range(len(specific_h))] for i in range(len(specific_h))] 
+     print("General",general_h) 
+     for i,h in enumerate(concept): 
+         print("Instances", i+1, "is", h) 
+         if target[i]==1: 
+            print("Instance is positive") 
+            for x in range(len(specific_h)): 
+                 if(h[x]!=specific_h[x]): 
+                     specific_h[x]='?'
+                     general_h[x][x]='?'
+         if(target[i]==0): 
+             print("instance is negative") 
+             for x in range(len(specific_h)): 
+                 if h[x]!=specific_h[x]: 
+                     general_h[x][x]=specific_h[x] 
+                 else: 
+                     general_h[x][x]='?'
+         print("Specific boundary", i+1, specific_h) 
+         print("General bundary", i+1, general_h) 
+         print("\n") 
+learn(concept, target) 

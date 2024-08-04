@@ -1,0 +1,46 @@
+import pandas as pd
+import numpy as np
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.models import BayesianModel
+from pgmpy.inference import VariableElimination
+import networkx as nx
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("C:/Users/dilee/Desktop/medical dataset.csv")
+
+print(df.head())
+
+print(df.info())
+
+print(pd.unique(df['age']))
+
+model = BayesianModel([
+    ('age', 'heartdisease'),
+    ('gender', 'heartdisease'),
+    ('exang', 'heartdisease'),
+    ('cp', 'heartdisease'),
+    ('heartdisease', 'restecg'),
+    ('heartdisease', 'chol')
+])
+
+model.fit(df, estimator=MaximumLikelihoodEstimator)
+
+print('\nInferencing with Bayesian Network:')
+HeartDisease_infer = VariableElimination(model)
+
+# Query 1: Probability of HeartDisease given evidence=cp
+print('\n1. Probability of HeartDisease given evidence=cp')
+q1 = HeartDisease_infer.query(variables=['heartdisease'], evidence={'cp': 1})
+print(q1)
+
+# Query 2: Probability of HeartDisease given evidence=restecg
+print('\n2. Probability of HeartDisease given evidence=restecg')
+q2 = HeartDisease_infer.query(variables=['heartdisease'], evidence={'restecg': 1})
+print(q2)
+
+# Draw the Bayesian Network
+graph = nx.DiGraph(model.edges())
+nx.draw_networkx(graph, with_labels=True)
+
+# Show plot
+plt.show()
